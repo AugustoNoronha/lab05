@@ -1,118 +1,141 @@
-# LAB05 – GraphQL vs REST  
+# LAB05 — GraphQL vs REST: Um Experimento Controlado
 
-# 1. Desenho do Experimento
+Este repositório contém a implementação completa do Laboratório 05 da disciplina de Experimentação em Engenharia de Software (PUC Minas).  
+O objetivo é avaliar comparativamente APIs REST e GraphQL em relação às seguintes perguntas de pesquisa:
 
-## A. Hipóteses
+- RQ1: Consultas GraphQL são mais rápidas do que consultas REST?
+- RQ2: Consultas GraphQL retornam respostas menores do que consultas REST?
 
-### **RQ1 – Tempo de Resposta**
-- **H0₁ (Nula):** Não existe diferença estatisticamente significativa no tempo de resposta entre REST e GraphQL.  
-- **H1₁ (Alternativa):** GraphQL apresenta tempo de resposta menor que REST.
-
-### **RQ2 – Tamanho da Resposta**
-- **H0₂ (Nula):** Não existe diferença significativa no tamanho (bytes) das respostas entre REST e GraphQL.  
-- **H1₂ (Alternativa):** GraphQL retorna payloads menores do que REST.
+O projeto inclui scripts, coleta de dados, análise estatística e visualizações que permitem a reprodução integral do experimento.
 
 ---
 
-## B. Variáveis Dependentes
-- **VD1 – Tempo de resposta (ms)**
-- **VD2 – Tamanho da resposta (bytes)**
+## 1. Introdução
+
+REST é amplamente utilizado na construção de APIs, operando com endpoints e recursos definidos. GraphQL propõe uma abordagem declarativa, permitindo ao cliente especificar exatamente quais dados deseja, o que pode resultar em menor consumo de banda e maior eficiência em certos cenários.
+
+Para este experimento, foram definidas as seguintes perguntas de pesquisa:
+
+- RQ1: Consultas GraphQL são mais rápidas que consultas REST?
+- RQ2: Consultas GraphQL retornam respostas menores que consultas REST?
+
+Hipóteses:
+
+- H0_RQ1: Não há diferença significativa no tempo de resposta entre REST e GraphQL.  
+- H1_RQ1: GraphQL apresenta menor tempo de resposta.
+
+- H0_RQ2: Não há diferença significativa no tamanho das respostas entre REST e GraphQL.  
+- H1_RQ2: GraphQL apresenta respostas menores.
 
 ---
 
-## C. Variáveis Independentes
-- **VI1 – Tecnologia da API:**  
-  - REST  
-  - GraphQL  
+## 2. Metodologia
 
-- **VI2 – Tipo de consulta (opcional):**  
-  - Consulta simples  
-  - Consulta com relacionamento  
-  - Consulta com filtro/paginação  
+### 2.1 APIs Testadas
 
----
+Foram utilizadas APIs públicas e estáveis:
 
-## D. Tratamentos
-- **T1 – REST:** execução das consultas na API REST.  
-- **T2 – GraphQL:** execução das mesmas consultas na API GraphQL.
+- REST: https://jsonplaceholder.typicode.com/posts/1
+- GraphQL: https://graphql-pokeapi.graphcdn.app/
 
----
+Query utilizada:
 
-## E. Objetos Experimentais
-
-Para este experimento utilizaremos um domínio simples: **Catálogo de Filmes**.
-
-As três consultas utilizadas serão:
-
-### **Q1 – Buscar filme pelo ID**  
-- REST → GET `/movies/{id}`  
-- GraphQL → query `{ movie(id: ID) { id title year } }`
-
-### **Q2 – Buscar filme + atores relacionados**  
-- REST → GET `/movies/{id}/full`  
-- GraphQL → query `{ movie(id: ID) { id title year cast { id name } } }`
-
-### **Q3 – Listar filmes com filtro por ano e paginação**  
-- REST → GET `/movies?year=YYYY&page=X`  
-- GraphQL → query `{ movies(year: YYYY, page: X) { id title year } }`
-
----
-
-## F. Tipo de Projeto Experimental
-
-O experimento será do tipo:
-
-- **Experimento controlado**
-- **Medidas repetidas**
-- **Execução em ambiente constante**
-- **Comparação direta REST vs GraphQL**
-
----
-
-## G. Quantidade de Medições
-
-Cada consulta (Q1, Q2, Q3) será executada:
-
-- **N = 30 repetições** para REST  
-- **N = 30 repetições** para GraphQL  
-
-Total de medições:  
-
-```
-3 consultas × 2 tecnologias × 30 repetições = 180 medições
+```graphql
+query {
+  pokemon(name: "pikachu") {
+    id
+    name
+    height
+    weight
+  }
+}
 ```
 
----
+### 2.2 Variáveis
 
-# 2. Preparação do Experimento
+- Variável Independente: Tipo de API (REST ou GraphQL)  
+- Variáveis Dependentes:
+  - Tempo de resposta (ms)
+  - Tamanho da resposta (bytes)
 
-Para a execução do experimento, adotamos a linguagem Python 3.x como base. Essa escolha se deve à simplicidade para realizar requisições HTTP, medir desempenho e manipular dados posteriormente.
-As bibliotecas selecionadas para essa fase incluem:
-requests – utilizada para realizar as chamadas REST e GraphQL;
-time – empregada para medir o tempo de execução de cada requisição;
-json – usada na manipulação de estruturas de dados retornadas pelas APIs;
-pandas – destinada ao processamento e análise dos resultados obtidos durante as medições.
-Com isso, estruturamos o ambiente inicial do experimento da seguinte forma:
-criação de um arquivo requirements.txt contendo as dependências necessárias;
-desenvolvimento do arquivo esqueleto_experimento.py, responsável por iniciar e validar o processo de medição;
-definição das URLs que serão utilizadas para acessar tanto a API REST quanto a GraphQL;
-realização de um teste inicial de comunicação, garantindo que o cliente Python consiga se conectar às duas APIs antes da execução completa do experimento.
+### 2.3 Procedimento Experimental
 
----
+- Foram realizadas 50 medições REST e 50 medições GraphQL.  
+- Todas as medições foram executadas no mesmo ambiente e rede.  
+- Os dados resultantes foram armazenados em `resultados_experimento.csv`.
 
-# 3. Tecnologias que serão utilizadas
+Scripts utilizados:
 
-## **Backend REST**
-- Framework livre  
-- Deve expor rotas:
-  - `/movies/`
-  - `/movies/{id}`
-  - `/movies/{id}/full`
-
-## **Backend GraphQL**
-- Framework livre  
-- Deve expor queries equivalentes:
-  - `movie(id)`
-  - `movies(year, page)`
+- `run_experiment.py`: coleta das medições  
+- `analyze_results.py`: análises estatísticas e geração de gráficos  
 
 ---
+
+## 3. Resultados
+
+A seguir são apresentados os gráficos utilizados para análise.  
+Placeholders das imagens:
+
+```
+![violino_tempo](./violino_tempo.png)
+![violino_tamanho](./violino_tamanho.png)
+![boxplot_tempo](./boxplot_tempo.png)
+![boxplot_tamanho](./boxplot_tamanho.png)
+![hist_tempo](./hist_tempo.png)
+![hist_tamanho](./hist_tamanho.png)
+```
+
+---
+
+## 4. Discussão
+
+### 4.1 RQ1 — Tempo de Resposta
+
+- A API REST apresentou menor tempo médio de resposta.
+- A variabilidade do tempo de resposta da API GraphQL foi maior.
+- Um outlier significativo foi observado em GraphQL.
+
+Conclusão: não há evidência experimental de que GraphQL seja mais rápido.  
+H0_RQ1 não foi rejeitada.
+
+### 4.2 RQ2 — Tamanho da Resposta
+
+- As respostas GraphQL apresentaram cerca de 70 bytes.  
+- As respostas REST apresentaram cerca de 292 bytes.
+
+Conclusão: GraphQL retornou respostas significativamente menores.  
+H0_RQ2 foi rejeitada.
+
+---
+
+## 5. Conclusões Finais
+
+REST foi superior em velocidade e estabilidade.  
+GraphQL foi superior em economia de dados.  
+A escolha entre eles depende dos requisitos da aplicação.
+
+---
+
+## 6. Como Reproduzir o Experimento
+
+```
+pip install requests pandas matplotlib seaborn
+python run_experiment.py
+python analyze_results.py
+```
+
+---
+
+## 7. Ameaças à Validade
+
+- APIs públicas podem variar conforme a carga.  
+- A rede influencia diretamente as medições.  
+- Apenas um endpoint REST e uma query GraphQL foram avaliados.
+
+---
+
+## 8. Autores
+
+- Augusto Noronha  
+- Pedro Maximo  
+- David Leong  
