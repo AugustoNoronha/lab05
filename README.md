@@ -76,14 +76,14 @@ Scripts utilizados:
 A seguir são apresentados os gráficos utilizados para análise.  
 Placeholders das imagens:
 
-```
+
 ![violino_tempo](./violino_tempo.png)
 ![violino_tamanho](./violino_tamanho.png)
 ![boxplot_tempo](./boxplot_tempo.png)
 ![boxplot_tamanho](./boxplot_tamanho.png)
 ![hist_tempo](./hist_tempo.png)
 ![hist_tamanho](./hist_tamanho.png)
-```
+
 
 ---
 
