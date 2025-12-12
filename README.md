@@ -1,31 +1,33 @@
 # LAB05 — GraphQL vs REST: Um Experimento Controlado
 
-Este repositório contém a implementação completa do Laboratório 05 da disciplina de Experimentação em Engenharia de Software (PUC Minas).  
-O objetivo é avaliar comparativamente APIs REST e GraphQL em relação às seguintes perguntas de pesquisa:
+Este repositório contém a implementação completa do Laboratório 05 da disciplina de Laboratório de Experimentação de Software (PUC Minas).  
+O objetivo do experimento é avaliar comparativamente APIs REST e GraphQL quanto ao desempenho e ao volume de dados trafegados, respondendo às seguintes perguntas de pesquisa:
 
-- RQ1: Consultas GraphQL são mais rápidas do que consultas REST?
-- RQ2: Consultas GraphQL retornam respostas menores do que consultas REST?
+- **RQ1:** Consultas GraphQL são mais rápidas do que consultas REST?
+- **RQ2:** Consultas GraphQL retornam respostas menores do que consultas REST?
 
-O projeto inclui scripts, coleta de dados, análise estatística e visualizações que permitem a reprodução integral do experimento.
+O projeto inclui scripts de execução do experimento, coleta de dados, análise estatística e visualizações gráficas que permitem a reprodução integral do estudo.
 
 ---
 
 ## 1. Introdução
 
-REST é amplamente utilizado na construção de APIs, operando com endpoints e recursos definidos. GraphQL propõe uma abordagem declarativa, permitindo ao cliente especificar exatamente quais dados deseja, o que pode resultar em menor consumo de banda e maior eficiência em certos cenários.
+APIs REST são amplamente utilizadas na construção de sistemas distribuídos, operando por meio de endpoints e recursos previamente definidos. Em contrapartida, o GraphQL propõe uma abordagem declarativa, permitindo que o cliente especifique exatamente quais dados deseja obter, o que pode reduzir o volume de dados transferidos e aumentar a flexibilidade das consultas.
 
-Para este experimento, foram definidas as seguintes perguntas de pesquisa:
+Apesar da crescente adoção do GraphQL, ainda não há consenso sobre seus reais benefícios em comparação ao REST, especialmente em termos de desempenho e eficiência. Nesse contexto, este laboratório tem como objetivo realizar um experimento controlado para avaliar quantitativamente essas duas abordagens.
 
-- RQ1: Consultas GraphQL são mais rápidas que consultas REST?
-- RQ2: Consultas GraphQL retornam respostas menores que consultas REST?
+As seguintes perguntas de pesquisa foram definidas:
+
+- **RQ1:** Consultas GraphQL são mais rápidas que consultas REST?
+- **RQ2:** Consultas GraphQL retornam respostas menores que consultas REST?
 
 Hipóteses:
 
-- H0_RQ1: Não há diferença significativa no tempo de resposta entre REST e GraphQL.  
-- H1_RQ1: GraphQL apresenta menor tempo de resposta.
+- **H0_RQ1:** Não há diferença significativa no tempo de resposta entre REST e GraphQL.  
+- **H1_RQ1:** GraphQL apresenta menor tempo de resposta que REST.
 
-- H0_RQ2: Não há diferença significativa no tamanho das respostas entre REST e GraphQL.  
-- H1_RQ2: GraphQL apresenta respostas menores.
+- **H0_RQ2:** Não há diferença significativa no tamanho das respostas entre REST e GraphQL.  
+- **H1_RQ2:** GraphQL apresenta respostas menores que REST.
 
 ---
 
@@ -35,10 +37,10 @@ Hipóteses:
 
 Foram utilizadas APIs públicas e estáveis:
 
-- REST: https://jsonplaceholder.typicode.com/posts/1
-- GraphQL: https://graphql-pokeapi.graphcdn.app/
+- **REST:** https://jsonplaceholder.typicode.com/posts/1  
+- **GraphQL:** https://graphql-pokeapi.graphcdn.app/
 
-Query utilizada:
+Consulta GraphQL utilizada:
 
 ```graphql
 query {
@@ -51,16 +53,16 @@ query {
 }
 ```
 
-### 2.2 Variáveis
+### 2.2 Variáveis do Experimento
 
-- Variável Independente: Tipo de API (REST ou GraphQL)  
-- Variáveis Dependentes:
+- **Variável Independente:** Tipo de API (REST ou GraphQL)  
+- **Variáveis Dependentes:**
   - Tempo de resposta (ms)
   - Tamanho da resposta (bytes)
 
 ### 2.3 Procedimento Experimental
 
-- Foram realizadas 50 medições REST e 50 medições GraphQL.  
+- Foram realizadas **50 medições** REST e **50 medições** GraphQL.  
 - Todas as medições foram executadas no mesmo ambiente e rede.  
 - Os dados resultantes foram armazenados em `resultados_experimento.csv`.
 
@@ -73,9 +75,28 @@ Scripts utilizados:
 
 ## 3. Resultados
 
-A seguir são apresentados os gráficos utilizados para análise.  
-Placeholders das imagens:
+A análise dos resultados foi conduzida por meio de gráficos estatísticos (boxplots, histogramas e gráficos de violino), permitindo observar tendências centrais, dispersão e presença de outliers.
 
+### 3.1 Gráficos
+
+Tempo de resposta:
+- `boxplot_tempo.png`
+- `violino_tempo.png`
+- `hist_tempo.png`
+
+Tamanho da resposta:
+- `boxplot_tamanho.png`
+- `violino_tamanho.png`
+- `hist_tamanho.png`
+
+Dashboard consolidado:
+- `dashboard_lab05.png`
+
+A seguir são apresentados os gráficos utilizados para análise:
+
+![dashboard](./dashboard_lab05.png)
+
+Gráficos individuais (opcional para inspeção detalhada):
 
 ![violino_tempo](./violino_tempo.png)
 ![violino_tamanho](./violino_tamanho.png)
@@ -84,52 +105,60 @@ Placeholders das imagens:
 ![hist_tempo](./hist_tempo.png)
 ![hist_tamanho](./hist_tamanho.png)
 
-
 ---
 
 ## 4. Discussão
 
 ### 4.1 RQ1 — Tempo de Resposta
 
-- A API REST apresentou menor tempo médio de resposta.
-- A variabilidade do tempo de resposta da API GraphQL foi maior.
-- Um outlier significativo foi observado em GraphQL.
+A partir dos gráficos de tempo (boxplot, violino e histograma), observou-se que:
 
-Conclusão: não há evidência experimental de que GraphQL seja mais rápido.  
-H0_RQ1 não foi rejeitada.
+- O **REST apresentou menor tempo médio e mediano** em comparação ao GraphQL.
+- O **GraphQL apresentou maior variabilidade** no tempo de resposta.
+- Foi observado um **outlier significativo** no GraphQL, indicando instabilidade em algumas execuções.
+- O REST mostrou maior concentração de valores, sugerindo **maior previsibilidade**.
+
+**Conclusão (RQ1):** não há evidência experimental de que GraphQL seja mais rápido.  
+➡️ **H0_RQ1 não foi rejeitada.**
 
 ### 4.2 RQ2 — Tamanho da Resposta
 
-- As respostas GraphQL apresentaram cerca de 70 bytes.  
-- As respostas REST apresentaram cerca de 292 bytes.
+A partir dos gráficos de tamanho (boxplot, violino e histograma), observou-se que:
 
-Conclusão: GraphQL retornou respostas significativamente menores.  
-H0_RQ2 foi rejeitada.
+- As respostas GraphQL foram **consistentemente menores**.
+- As respostas REST foram **significativamente maiores** no cenário avaliado.
+- Valores aproximados observados:
+  - GraphQL: ~**70 bytes**
+  - REST: ~**292 bytes**
+
+**Conclusão (RQ2):** GraphQL retornou respostas significativamente menores.  
+➡️ **H0_RQ2 foi rejeitada.**
 
 ---
 
 ## 5. Conclusões Finais
 
-REST foi superior em velocidade e estabilidade.  
-GraphQL foi superior em economia de dados.  
-A escolha entre eles depende dos requisitos da aplicação.
+- O **REST** foi superior em **velocidade** e **estabilidade** (menor variabilidade).
+- O **GraphQL** foi superior em **economia de dados** (respostas menores).
+- A escolha entre REST e GraphQL depende dos requisitos da aplicação (latência, banda, flexibilidade).
 
 ---
 
 ## 6. Como Reproduzir o Experimento
 
-```
-pip install requests pandas matplotlib seaborn
+```bash
+pip install requests pandas matplotlib seaborn pillow
 python run_experiment.py
 python analyze_results.py
+python g_d.py
 ```
 
 ---
 
 ## 7. Ameaças à Validade
 
-- APIs públicas podem variar conforme a carga.  
-- A rede influencia diretamente as medições.  
+- APIs públicas podem variar conforme a carga do servidor.
+- A rede influencia diretamente as medições.
 - Apenas um endpoint REST e uma query GraphQL foram avaliados.
 
 ---
